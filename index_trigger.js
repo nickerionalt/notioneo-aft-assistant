@@ -1,3 +1,4 @@
+import { exec } from 'child_process';
 import { Client } from "@notionhq/client"
 
 const notion = new Client({ auth: "secret_1znQ6olMQsv4LAUmiDUWxrZlAJ2hibu5Rut4LOVU0VB" });
@@ -33,6 +34,14 @@ async function listenForNewPages(databaseId) {
       newPages.forEach((page) => {
         console.log(`${page.properties.Name.title[0].text.content}`);
         // perform your desired action on the new page here
+        exec("node index.js", (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+        });
       });
     }
 

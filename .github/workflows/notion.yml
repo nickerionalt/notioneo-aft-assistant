@@ -8,8 +8,9 @@ on: # Remove the first '#' in this line and select one or both options below rem
   workflow_dispatch:
 
 jobs:
-  build:
+  build-node:
     runs-on: ubuntu-latest
+    container: node:16
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

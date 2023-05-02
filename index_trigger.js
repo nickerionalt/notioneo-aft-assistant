@@ -1,4 +1,4 @@
-const { Client } = require("@notionhq/client");
+import { Client } from "@notionhq/client"
 
 const notion = new Client({ auth: "secret_1znQ6olMQsv4LAUmiDUWxrZlAJ2hibu5Rut4LOVU0VB" });
 

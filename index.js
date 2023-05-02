@@ -11,28 +11,12 @@ const database2Id = '30238b71ba5246fdb159ca24d25b0414';
 
 // Set up a filter for database_1 to find RT Income and RT Expense items with empty Month relation
 const database1Filter = {
-  or: [
-    {
-      property: 'Type',
-      select: {
-        equals: 'RT Income',
-      },
-    },
-    {
-      property: 'Type',
-      select: {
-        equals: 'RT Expense',
-      },
-    },
-  ],
-  and: [
     {
       property: 'Month',
       relation: {
         is_empty: true,
       },
     },
-  ],
 };
 
 // Set up a filter for database_2 to find items with a matching Month Text formula

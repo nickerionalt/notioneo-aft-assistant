@@ -11,18 +11,13 @@ on: # Remove the first '#' in this line and select one or both options below rem
   workflow_dispatch: # If you want this option, just uncomment this line and nothing else :), you are good
 
 jobs:
-  build:
+  build-node:
     runs-on: ubuntu-latest
+    container: node:16
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - run: node --version
+      - run: npm --version
       - uses: actions/checkout@v3
-
-      # Use deno
-      - uses: denoland/setup-deno@v1
-        with:
-          deno-version: vx.x.x
-
-      # Runs a set of commands using the runners shell
-      - name: Main program
-        run: |
-          echo "🤖 Executing the script..."
+      - run: npm install
+      - run: node index.js

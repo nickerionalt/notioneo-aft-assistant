@@ -19,9 +19,11 @@ async function listenForNewPages(databaseId) {
   while (true) {
     await new Promise((resolve) => setTimeout(resolve, 5000)); // wait for 5 seconds before checking for new pages
 
+    const startCursor = cursor.next_cursor ? cursor.next_cursor : undefined;
+
     const newCursor = await notion.databases.query({
       database_id: databaseId,
-      start_cursor: cursor.next_cursor,
+      start_cursor: startCursor,
     });
 
     const newPages = newCursor.results;

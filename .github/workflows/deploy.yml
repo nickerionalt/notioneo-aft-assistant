@@ -21,4 +21,4 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "notioneotest1"
-          entrypoint: "./src/trigger.ts" # TODO: update entrypoint
+          entrypoint: "./trigger.ts" # TODO: update entrypoint

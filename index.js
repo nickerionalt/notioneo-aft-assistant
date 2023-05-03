@@ -1,4 +1,4 @@
-import { Client } from "@notionhq/client"
+import { Client } from "https://github.com/makenotion/notion-sdk-js"
 
 // Initialize a new Notion API client
 const notion = new Client({

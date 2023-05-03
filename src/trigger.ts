@@ -1,5 +1,9 @@
 setInterval(async () => {
-  const res = await fetch("https://github.com/nickerions/notioneo-auto-month-script/blob/main/src/main.ts");
+  const res = await fetch("./main.ts");
   const script = await res.text();
-  eval(script);
+  try {
+    eval(script);
+  } catch (error) {
+    console.error(error);
+  }
 }, 5000);

@@ -19,4 +19,4 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "notioneotest1"
-          entrypoint: "../workflows/main.ts" # TODO: update entrypoint
+          entrypoint: "./main.ts" # TODO: update entrypoint

@@ -88,4 +88,6 @@ async function watchDatabase1() {
 }
 
 // Call the main function
-watchDatabase1();
+// watchDatabase1();
+
+setInterval(watchDatabase1, 5000);

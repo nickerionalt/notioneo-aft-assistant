@@ -1,5 +1,14 @@
-name: Deploy
-on: [push]
+name: notioneo-auto-month-script
+
+# Controls when the workflow will run
+
+on: [push] # Remove the first '#' in this line and select one or both options below removing the comments in line 7-8 or/and 11
+  # Run automatically every day at 00:07
+  # schedule: # Make sure to uncomment the line below if you uncomment this line
+    # - cron: "07 */24 * * *"
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: # If you want this option, just uncomment this line and nothing else :), you are good
 
 jobs:
   deploy:
@@ -8,15 +17,15 @@ jobs:
     permissions:
       id-token: write # Needed for auth with Deno Deploy
       contents: read # Needed to clone the repository
-
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
       - name: Install Deno
         run: curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.12.1
-
-      # TODO: add a build step here
-
+  build:
+    runs-on: ubuntu-latest
+      - name: Run Deno
+        run: deno run index.ts
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:

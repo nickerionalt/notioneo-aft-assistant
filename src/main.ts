@@ -62,8 +62,6 @@ async function watchDatabase1() {
   console.log('Watching "Transactions" Database...');
 try {
     // Make the request to the Notion API
-    const response = await notionClient.makeRequest();
-
   const response = await notion.databases.query({
     database_id: database1Id,
     filter: database1Filter,
@@ -111,8 +109,6 @@ try {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         // Retry the request
-        const response = await notionClient.makeRequest();
-
           const response = await notion.databases.query({
             database_id: database1Id,
             filter: database1Filter,
@@ -155,12 +151,7 @@ try {
         retryCount++;
       }
     }
-
-    // Continue with the rest of your program logic, even if the retry attempts fail
-    // ...
   }
 }
-// Call the main function
-// watchDatabase1();
 
 setInterval(watchDatabase1, 5000);

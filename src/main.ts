@@ -60,6 +60,9 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
 // Define the main function to watch database_1 and update the Month property when needed
 async function watchDatabase1() {
   console.log('Watching "Transactions" Database...');
+try {
+    // Make the request to the Notion API
+    const response = await notionClient.makeRequest();
 
   const response = await notion.databases.query({
     database_id: database1Id,
@@ -92,9 +95,71 @@ async function watchDatabase1() {
     }
   }
 
-  console.log('Done.');
+  console.log('Done and trying again.');
 }
+} catch (error) {
+    // Handle the error
+    console.error('Request to Notion API failed:', error);
 
+    // Retry logic
+    const MAX_RETRY_ATTEMPTS = 10;
+    let retryCount = 0;
+
+    while (retryCount < MAX_RETRY_ATTEMPTS) {
+      try {
+        // Wait for a certain period before retrying (e.g., 5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        // Retry the request
+        const response = await notionClient.makeRequest();
+
+          const response = await notion.databases.query({
+            database_id: database1Id,
+            filter: database1Filter,
+          });
+
+          console.log(`Found ${response.results.length} items in "Transactions" Database`);
+
+          for (const database1Item of response.results) {
+            // Get the Month Text formula from the database_1 item
+            const monthTextFormula = database1Item.properties['Month Text'].formula.string;
+
+            console.log(`Checking for matching month in "Month" Database for "Transactions" Database item ${database1Item.id}...`);
+
+            // Update the filter for database_2 to use the Month Text formula from database_1
+            database2Filter.formula.string.equals = monthTextFormula;
+
+            // Query database_2 with the updated filter
+            const response2 = await notion.databases.query({
+              database_id: database2Id,
+              filter: database2Filter,
+            });
+
+            if (response2.results.length > 0) {
+              // Update the Month property in database_1 with the first matching database_2 item if it is empty
+              await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
+              console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
+            } else {
+              console.log(`No matching month found in "Month" Database for "Transactions" Database item ${database1Item.id}.`);
+            }
+          }
+
+          console.log('Done and trying again.');
+        }
+        break;
+      } catch (error) {
+        // Handle the error
+        console.error('Retry attempt failed:', error);
+
+        // Increment the retry count
+        retryCount++;
+      }
+    }
+
+    // Continue with the rest of your program logic, even if the retry attempts fail
+    // ...
+  }
+}
 // Call the main function
 // watchDatabase1();
 

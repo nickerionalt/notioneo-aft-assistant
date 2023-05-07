@@ -1,9 +1,9 @@
 name: Notion Integration
 
-on: # Remove the first '#' in this line and select one or both options below removing the comments in line 7-8 or/and 11
+# on: # Remove the first '#' in this line and select one or both options below removing the comments in line 7-8 or/and 11
   # Run automatically
-  schedule: # Make sure to uncomment the line below if you uncomment this line
-    - cron: "*/5 * * * *"
+  # schedule: # Make sure to uncomment the line below if you uncomment this line
+    # - cron: "*/5 * * * *"
       
   workflow_dispatch:
 

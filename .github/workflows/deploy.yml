@@ -7,9 +7,6 @@ on: [push] # Remove the first '#' in this line and select one or both options be
   # schedule: # Make sure to uncomment the line below if you uncomment this line
     # - cron: "07 */24 * * *"
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch: # If you want this option, just uncomment this line and nothing else :), you are good
-
 jobs:
   deploy:
     name: Deploy

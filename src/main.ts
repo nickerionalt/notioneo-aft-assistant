@@ -1,18 +1,17 @@
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
-const core = require("@actions/core");
 
-const NOTION_TOKEN = core.getInput("NOTION_TOKEN")
-const DATABASE_1 = core.getInput("DATABASE_1")
-const DATABASE_2 = core.getInput("DATABASE_2")
+const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
+const DATABASE_1 = Deno.env.get("DATABASE_1");
+const DATABASE_2 = Deno.env.get("DATABASE_2");
 
 if (!NOTION_TOKEN || !DATABASE_1 || !DATABASE_2) {
-    throw new Error("Notion token or databases id not found")
+    throw new Error("Notion token or database IDs not found");
 }
 
 // Initialize a new Notion API client
 const notion = new Client({
     auth: NOTION_TOKEN,
-})
+});
 
 // Set the IDs of the two databases
 const database1Id = DATABASE_1;

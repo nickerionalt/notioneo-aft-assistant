@@ -5,7 +5,7 @@ const DATABASE_1 = Deno.env.get("DATABASE_1");
 const DATABASE_2 = Deno.env.get("DATABASE_2");
 
 if (!NOTION_TOKEN || !DATABASE_1 || !DATABASE_2) {
-    throw new Error("Notion token or database IDs not found");
+    throw new Error("Notion token or database IDs not found. Please, re-check the values again or write a support request to contact@notioneo.com.");
 }
 
 // Initialize a new Notion API client
@@ -53,26 +53,26 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
         },
       },
     });
-    console.log(`Updated Month property for "Transactions" DB item ${database1ItemId}`);
+    console.log(`Updated Month property for "Transactions" Database item ${database1ItemId}`);
   }
 }
 
 // Define the main function to watch database_1 and update the Month property when needed
 async function watchDatabase1() {
-  console.log('Watching "Transactions" DB Database...');
+  console.log('Watching "Transactions" Database...');
 
   const response = await notion.databases.query({
     database_id: database1Id,
     filter: database1Filter,
   });
 
-  console.log(`Found ${response.results.length} items in "Transactions" DB.`);
+  console.log(`Found ${response.results.length} items in "Transactions" Database`);
 
   for (const database1Item of response.results) {
     // Get the Month Text formula from the database_1 item
     const monthTextFormula = database1Item.properties['Month Text'].formula.string;
 
-    console.log(`Checking for matching Month in "Months" DB for "Transactions" DB item ${database1Item.id}...`);
+    console.log(`Checking for matching month in "Month" Database for "Transactions" Database item ${database1Item.id}...`);
 
     // Update the filter for database_2 to use the Month Text formula from database_1
     database2Filter.formula.string.equals = monthTextFormula;
@@ -86,9 +86,9 @@ async function watchDatabase1() {
     if (response2.results.length > 0) {
       // Update the Month property in database_1 with the first matching database_2 item if it is empty
       await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
-      console.log(`Linked "Transactions" DB item ${database1Item.id} with "Month" DB item ${response2.results[0].id}.`);
+      console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
     } else {
-      console.log(`No matching Month found in "Month" DB for "Transactions" DB item ${database1Item.id}.`);
+      console.log(`No matching month found in "Month" Database for "Transactions" Database item ${database1Item.id}.`);
     }
   }
 

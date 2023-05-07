@@ -16,7 +16,7 @@ jobs:
       - name: Install Deno
         run: curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.12.1
       - name: Run Deno
-        run: deno run index.ts
+        run: deno run main.ts
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:

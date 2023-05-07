@@ -1,11 +1,6 @@
 name: notioneo-auto-month-script
 
-# Controls when the workflow will run
-
-on: [push] # Remove the first '#' in this line and select one or both options below removing the comments in line 7-8 or/and 11
-  # Run automatically every day at 00:07
-  # schedule: # Make sure to uncomment the line below if you uncomment this line
-    # - cron: "07 */24 * * *"
+on: [push]
 
 jobs:
   deploy:

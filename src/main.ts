@@ -4,7 +4,7 @@ import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 const notion = new Client({
   auth: Deno.env.get("NOTION_TOKEN"),
 });
-const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN") as string
+
 // Set the IDs of the two databases
 const database1Id = Deno.env.get("DATABASE_1");
 const database2Id = Deno.env.get("DATABASE_2");

@@ -1,8 +1,8 @@
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 
-const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
-const DATABASE_1 = Deno.env.get("DATABASE_1");
-const DATABASE_2 = Deno.env.get("DATABASE_2");
+const NOTION_TOKEN = process.env.get("NOTION_TOKEN");
+const DATABASE_1 = process.env.get("DATABASE_1");
+const DATABASE_2 = process.env.get("DATABASE_2");
 
 if (!NOTION_TOKEN || !DATABASE_1 || !DATABASE_2) {
     throw new Error("Notion token or database IDs not found. Please, re-check the values again or write a support request to contact@notioneo.com.");

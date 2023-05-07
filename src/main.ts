@@ -1,12 +1,11 @@
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN") as string
+const DATABASE_1 = Deno.env.get("DATABASE_1") as string
+const DATABASE_2 = Deno.env.get("DATABASE_2") as string
 
-const DATABASE_1 = Deno.env.get("DATABASE_1");
-const DATABASE_2 = Deno.env.get("DATABASE_2");
-
-if (!NOTION_TOKEN) {
-    throw new Error("Notion token id not found")
+if (!NOTION_TOKEN || !DATABASE_1 || !DATABASE_2) {
+    throw new Error("Notion token or databases id not found")
 }
 
 // Initialize a new Notion API client

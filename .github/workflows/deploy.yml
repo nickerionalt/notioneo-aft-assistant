@@ -22,3 +22,7 @@ jobs:
         with:
           project: "notioneotest1"
           entrypoint: "./trigger.ts" # TODO: update entrypoint
+    env:
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        DATABASE_1: ${{ secrets.DATABASE_1 }}
+        DATABASE_2: ${{ secrets.DATABASE_2 }}

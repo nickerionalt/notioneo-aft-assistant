@@ -1,6 +1,7 @@
 name: notioneo-auto-month-script
 
 on:
+  push:
   schedule:
     - cron: "0 */5 * * *"
   workflow_dispatch:
@@ -15,6 +16,11 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v3
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: notioneotest1
+          entrypoint: ./main.ts
       - uses: denoland/setup-deno@v1
         with:
           deno-version: vx.x.x
@@ -26,8 +32,3 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           DATABASE_1: ${{ secrets.DATABASE_1 }}
           DATABASE_2: ${{ secrets.DATABASE_2 }}
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: notioneotest1
-          entrypoint: ./main.ts

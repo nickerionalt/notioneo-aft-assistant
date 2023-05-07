@@ -21,7 +21,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "notioneotest1"
-          entrypoint: "./trigger.ts" # TODO: update entrypoint
+          entrypoint: "./index.ts" # TODO: update entrypoint
     env:
         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         DATABASE_1: ${{ secrets.DATABASE_1 }}

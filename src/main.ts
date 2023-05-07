@@ -2,6 +2,9 @@ import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN") as string
 
+const DATABASE_1 = Deno.env.get("DATABASE_1");
+const DATABASE_2 = Deno.env.get("DATABASE_2");
+
 if (!NOTION_TOKEN) {
     throw new Error("Notion token id not found")
 }
@@ -12,8 +15,8 @@ const notion = new Client({
 })
 
 // Set the IDs of the two databases
-const database1Id = Deno.env.get("DATABASE_1");
-const database2Id = Deno.env.get("DATABASE_2");
+const database1Id = DATABASE_1;
+const database2Id = DATABASE_2;
 
 // Set up a filter for database_1 to find RT Income and RT Expense items with empty Month relation
 const database1Filter = {

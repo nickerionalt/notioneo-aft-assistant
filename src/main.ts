@@ -63,17 +63,17 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
   }
 }
 
-// Define a function to handle the error and retry the request after a delay
-async function handleAPIError(error, retryCount) {
-  console.error('Request to Notion API failed:', error);
+// Define the function to handle API errors and retries
+async function handleAPIError(funcName, error, retryCount) {
+  console.error(`Request to Notion API for "${funcName}" failed:`, error);
   if (retryCount < 10) {
     const retryDelay = 5000; // 5 seconds
-    console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+    console.log(`Retrying "${funcName}" in ${retryDelay / 1000} seconds...`);
     await new Promise((resolve) => setTimeout(resolve, retryDelay));
-    console.log('Retrying...');
-    await watchDatabase1();
+    console.log(`Retrying "${funcName}"...`);
+    await main();
   } else {
-    console.error('Exceeded maximum retry attempts. Terminating...');
+    console.error(`Exceeded maximum retry attempts for "${funcName}". Terminating...`);
     // You can add additional error handling or logging here
   }
 }
@@ -82,17 +82,18 @@ async function handleAPIError(error, retryCount) {
 async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
 
-    // Simulate an error by throwing an exception
-  if (retryCount === 3) {
-    throw new Error('Simulated Notion API error');
-  }
-
   try {
+    // Simulate an error by throwing an exception
+    throw new Error('Simulated API error');
+    
     // Make the request to the Notion API
     const response = await notion.databases.query({
       database_id: DATABASE_1,
       filter: database1Filter,
     });
+
+    // Simulate a 502 Bad Gateway error
+    throw { status: 502, message: 'Bad Gateway' };
 
     console.log(`Found ${response.results.length} items in "Transactions" Database`);
 
@@ -123,18 +124,13 @@ async function watchDatabase1(retryCount = 0) {
     console.log('Done and trying again.');
   } catch (error) {
     // Handle the error and retry
-    await handleAPIError(error, retryCount + 1);
+    await handleAPIError('watchDatabase1', error, retryCount + 1);
   }
 }
 
 // Define a function to link categories from DATABASE_3 to DATABASE_1 based on "Name" property
 async function linkCategoriesToDatabase1(retryCount = 0) {
   console.log('Linking categories from DATABASE_3 to DATABASE_1...');
-  
-  // Simulate an error by throwing an exception
-  if (retryCount === 5) {
-    throw new Error('Simulated Notion API error');
-  }
 
   try {
     // Query DATABASE_1 to retrieve all items
@@ -188,7 +184,7 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
     console.log('Done linking categories.');
   } catch (error) {
     // Handle the error and retry
-    await handleAPIError(error, retryCount + 1);
+    await handleAPIError('linkCategoriesToDatabase1', error, retryCount + 1);
   }
 }
 

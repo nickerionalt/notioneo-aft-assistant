@@ -215,4 +215,5 @@ async function main(retryCount = 0) {
     await main(retryCount + 1);
   }
 }
+}
 main();

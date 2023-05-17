@@ -158,7 +158,7 @@ async function linkCategoriesToDatabase1() {
 
     console.log('Done linking categories.');
   } 
-}
+}}
 
 // Call the linkCategoriesToDatabase1() function before the watchDatabase1() function
 setInterval(async () => {
@@ -295,7 +295,7 @@ async function linkCategoriesToDatabase1() {
 
     console.log('Done linking categories.');
   } 
-}
+}}
 
 // Call the linkCategoriesToDatabase1() function before the watchDatabase1() function
 setInterval(async () => {
@@ -312,4 +312,4 @@ setInterval(async () => {
       }
     }
   }
-}
+}}

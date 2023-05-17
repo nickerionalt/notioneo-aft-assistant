@@ -197,14 +197,7 @@ async function main(retryCount = 0) {
     console.error('Exceeded maximum retry attempts. Terminating...');
     return;
   }
-// ...
 
-// Define the main function for handling retries
-async function main(retryCount = 0) {
-  if (retryCount >= 10) {
-    console.error('Exceeded maximum retry attempts. Terminating...');
-    return;
-  }
   try {
     await watchDatabase1(retryCount);
     await linkCategoriesToDatabase1(retryCount);
@@ -215,5 +208,5 @@ async function main(retryCount = 0) {
     await main(retryCount + 1);
   }
 }
-}
+
 main();

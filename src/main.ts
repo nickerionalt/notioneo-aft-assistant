@@ -198,12 +198,14 @@ async function main(retryCount = 0) {
     return;
   }
 
-try {
-  await watchDatabase1(retryCount);
-  await linkCategoriesToDatabase1(retryCount);
-  setInterval(() => main(), 5000);
-} catch (error) {
-  console.error('Unexpected error occurred:', error);
-  await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
-  await main(retryCount + 1);
+    try {
+      await watchDatabase1(retryCount);
+      await linkCategoriesToDatabase1(retryCount);
+      setInterval(() => main(), 5000);
+    } catch (error) {
+      console.error('Unexpected error occurred:', error);
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
+      await main(retryCount + 1);
+    }
 }
+main();

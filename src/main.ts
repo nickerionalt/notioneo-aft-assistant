@@ -15,10 +15,6 @@ const notion = new Client({
     auth: NOTION_TOKEN,
 });
 
-// Set the IDs of the two databases
-const database1Id = DATABASE_1;
-const database2Id = DATABASE_2;
-
 // Set up a filter for database_1 to find RT Income and RT Expense items with empty Month relation
 const database1Filter = {
   property: 'Month',
@@ -67,13 +63,34 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
   }
 }
 
+// Define a function to handle the error and retry the request after a delay
+async function handleAPIError(error, retryCount) {
+  console.error('Request to Notion API failed:', error);
+  if (retryCount < 10) {
+    const retryDelay = 5000; // 5 seconds
+    console.log(`Retrying in ${retryDelay / 1000} seconds...`);
+    await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    console.log('Retrying...');
+    await watchDatabase1();
+  } else {
+    console.error('Exceeded maximum retry attempts. Terminating...');
+    // You can add additional error handling or logging here
+  }
+}
+
 // Define the main function to watch database_1 and update the Month property when needed
-async function watchDatabase1() {
+async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
+
+    // Simulate an error by throwing an exception
+  if (retryCount === 3) {
+    throw new Error('Simulated Notion API error');
+  }
+
   try {
     // Make the request to the Notion API
     const response = await notion.databases.query({
-      database_id: database1Id,
+      database_id: DATABASE_1,
       filter: database1Filter,
     });
 
@@ -90,7 +107,7 @@ async function watchDatabase1() {
 
       // Query database_2 with the updated filter
       const response2 = await notion.databases.query({
-        database_id: database2Id,
+        database_id: DATABASE_2,
         filter: database2Filter,
       });
 
@@ -98,33 +115,38 @@ async function watchDatabase1() {
         // Update the Month property in database_1 with the first matching database_2 item if it is empty
         await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
         console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
-      }
-      else {
+      } else {
         console.log(`No matching month found in "Month" Database for "Transactions" Database item ${database1Item.id}.`);
       }
     }
 
     console.log('Done and trying again.');
   } catch (error) {
-    // Handle the error
-    console.error('Request to Notion API failed:', error);
+    // Handle the error and retry
+    await handleAPIError(error, retryCount + 1);
   }
 }
 
 // Define a function to link categories from DATABASE_3 to DATABASE_1 based on "Name" property
-async function linkCategoriesToDatabase1() {
+async function linkCategoriesToDatabase1(retryCount = 0) {
   console.log('Linking categories from DATABASE_3 to DATABASE_1...');
+  
+  // Simulate an error by throwing an exception
+  if (retryCount === 5) {
+    throw new Error('Simulated Notion API error');
+  }
+
   try {
     // Query DATABASE_1 to retrieve all items
     const response3 = await notion.databases.query({
-      database_id: database1Id,
+      database_id: DATABASE_1,
       filter: database3Filter,
     });
 
     console.log(`Found ${response3.results.length} items in DATABASE_1`);
 
     for (const database1Item of response3.results) {
-      const itemName: string = database1Item.properties.Name.title[0].plain_text;
+      const itemName = database1Item.properties.Name.title[0].plain_text;
 
       if (categoryNames.includes(itemName)) {
         // Query DATABASE_3 to find the matching page based on the item name
@@ -165,13 +187,25 @@ async function linkCategoriesToDatabase1() {
 
     console.log('Done linking categories.');
   } catch (error) {
-    // Handle the error
-    console.error('Request to Notion API failed:', error);
+    // Handle the error and retry
+    await handleAPIError(error, retryCount + 1);
   }
 }
 
-// Call the linkCategoriesToDatabase1() function before the watchDatabase1() function
-setInterval(async () => {
-  await linkCategoriesToDatabase1();
-  await watchDatabase1();
-}, 5000);
+// Define the main function for handling retries
+async function main() {
+  let retryCount = 0;
+  while (retryCount < 10) {
+    try {
+      await linkCategoriesToDatabase1(retryCount);
+      await watchDatabase1(retryCount);
+      retryCount++;
+    } catch (error) {
+      console.error('Unexpected error occurred:', error);
+      break;
+    }
+  }
+}
+
+// Call the main function to start the process
+setInterval(main, 5000);

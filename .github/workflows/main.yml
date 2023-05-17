@@ -1,0 +1,27 @@
+name: Auto Month
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: vx.x.x
+      - name: Verify Deno installation
+        run: deno --version 
+      - name: Run Deno
+        run: deno run --allow-net=api.notion.com --allow-env https://deno.land/x/automonth@v.0.4.1/src/main.ts
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DATABASE_1: ${{ secrets.DATABASE_1 }}
+          DATABASE_2: ${{ secrets.DATABASE_2 }}
+          DATABASE_3: ${{ secrets.DATABASE_3 }}

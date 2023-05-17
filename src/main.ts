@@ -68,56 +68,49 @@ async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
 
  try {
-    if (retryCount >= 2) {
-      // Make the request to the Notion API only if the retryCount is greater than or equal to 2
-      const response = await notion.databases.query({
-        database_id: DATABASE_1,
-        filter: database1Filter,
-      });
+  // Make the request to the Notion API
+  const response = await notion.databases.query({
+    database_id: DATABASE_1,
+    filter: database1Filter,
+  });
 
-      console.log(`Found ${response.results.length} items in "Transactions" Database`);
+  console.log(`Found ${response.results.length} items in "Transactions" Database`);
 
-      for (const database1Item of response.results) {
-        // Get the Month Text formula from the database_1 item
-        const monthTextFormula = database1Item.properties['Month Text'].formula.string;
+  for (const database1Item of response.results) {
+    // Get the Month Text formula from the database_1 item
+    const monthTextFormula = database1Item.properties['Month Text'].formula.string;
 
-        console.log(`Checking for matching month in "Month" Database for "Transactions" Database item ${database1Item.id}...`);
+    console.log(`Checking for matching month in "Month" Database for "Transactions" Database item ${database1Item.id}...`);
 
-        // Update the filter for database_2 to use the Month Text formula from database_1
-        database2Filter.formula.string.equals = monthTextFormula;
+    // Update the filter for database_2 to use the Month Text formula from database_1
+    database2Filter.formula.string.equals = monthTextFormula;
 
-        // Query database_2 with the updated filter
-        const response2 = await notion.databases.query({
-          database_id: DATABASE_2,
-          filter: database2Filter,
-        });
+    // Query database_2 with the updated filter
+    const response2 = await notion.databases.query({
+      database_id: DATABASE_2,
+      filter: database2Filter,
+    });
 
-        if (response2.results.length > 0) {
-          // Update the Month property in database_1 with the first matching database_2 item if it is empty
-          await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
-          console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
-        } else {
-          console.log(`No matching month found in "Month" Database for "Transactions" Database item ${database1Item.id}.`);
-        }
-      }
-
-      console.log('Done or trying again.');
-    } else {
-      throw new Error('Simulated API error');
+    if (response2.results.length > 0) {
+      // Update the Month property in database_1 with the first matching database_2 item if it is empty
+      await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
+      console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
     }
-  } catch (error) {
-    // Handle the error and retry
-    console.error(`Request to Notion API for "watchDatabase1" failed:`, error);
-    if (retryCount < 10) {
-      const retryDelay = 5000; // 5 seconds
-      console.log(`Retrying "watchDatabase1" in ${retryDelay / 1000} seconds...`);
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      console.log(`Retrying "watchDatabase1"...`);
-      await watchDatabase1(retryCount + 1);
-    } else {
-      console.error(`Exceeded maximum retry attempts for "watchDatabase1". Terminating...`);
-      // You can add additional error handling or logging here
-    }
+  }
+
+  console.log('Done or trying again.');
+} catch (error) {
+  // Handle the error and retry
+  console.error(`Request to Notion API for "watchDatabase1" failed:`, error);
+  if (retryCount < 10) {
+    const retryDelay = 5000; // 5 seconds
+    console.log(`Retrying "watchDatabase1" in ${retryDelay / 1000} seconds...`);
+    await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    console.log(`Retrying "watchDatabase1"...`);
+    await watchDatabase1(retryCount + 1);
+  } else {
+    console.error(`Exceeded maximum retry attempts for "watchDatabase1". Terminating...`);
+    // You can add additional error handling or logging here
   }
 }
 

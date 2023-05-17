@@ -1,3 +1,4 @@
+import { categoryNames } from './categories.ts';
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
@@ -123,9 +124,9 @@ async function linkCategoriesToDatabase1() {
     console.log(`Found ${response3.results.length} items in DATABASE_1`);
 
     for (const database1Item of response3.results) {
-      const itemName = database1Item.properties.Name.title[0].plain_text;
+      const itemName: string = database1Item.properties.Name.title[0].plain_text;
 
-      if (itemName.includes('Groceries') || itemName.includes('Car') || itemName.includes('Transportation') || itemName.includes('Cash') || itemName.includes('Gas') || itemName.includes('Restaurants')) {
+      if (categoryNames.includes(itemName)) {
         // Query DATABASE_3 to find the matching page based on the item name
         const database3QueryResponse = await notion.databases.query({
           database_id: DATABASE_3,

@@ -2,11 +2,9 @@ import { categoryNames } from './categories.ts';
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
-const DATABASE_1 = Deno.env.get("DATABASE_1");
-const DATABASE_2 = Deno.env.get("DATABASE_2");
-const DATABASE_3 = Deno.env.get("DATABASE_3");
+const DATABASE_PAGE = Deno.env.get("DATABASE_PAGE");
 
-if (!NOTION_TOKEN || !DATABASE_1 || !DATABASE_2 || !DATABASE_3) {
+if (!NOTION_TOKEN || !DATABASE_PAGE) {
     throw new Error("Notion token or database IDs not found. Please, re-check the values again or write a support request to contact@notioneo.com.");
 }
 
@@ -14,6 +12,25 @@ if (!NOTION_TOKEN || !DATABASE_1 || !DATABASE_2 || !DATABASE_3) {
 const notion = new Client({
     auth: NOTION_TOKEN,
 });
+
+enum DatabaseType {
+    Transactions = "transactions",
+    Month = "month",
+    Categories = "categories",
+}
+
+async function getDatabaseId(database: DatabaseType) {
+    const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE, page_size: 50 })).results as BlockObjectResponse[]
+    const databaseId = (results).filter(r =>
+        r?.type === "child_database" &&
+        r.child_database?.title.toLowerCase() === database.toLowerCase()
+    )?.[0].id || '' // Not the cleanest code in earth...
+    return databaseId
+}
+
+const DATABASE_1 = await getDatabaseId(DatabaseType.Transactions)
+const DATABASE_2 = await getDatabaseId(DatabaseType.Month)
+const DATABASE_3 = await getDatabaseId(DatabaseType.Categories)
 
 // Set up a filter for database_1 to find RT Income and RT Expense items with empty Month relation
 const database1Filter = {

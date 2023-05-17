@@ -1,3 +1,4 @@
+import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from "https://deno.land/x/notion_sdk@v1.0.4/src/api-endpoints.ts";
 import { categoryNames } from './categories.ts';
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 

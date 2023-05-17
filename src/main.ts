@@ -71,7 +71,7 @@ async function handleAPIError(funcName, error, retryCount) {
     console.log(`Retrying "${funcName}" in ${retryDelay / 1000} seconds...`);
     await new Promise((resolve) => setTimeout(resolve, retryDelay));
     console.log(`Retrying "${funcName}"...`);
-    await main(retryCount); // Pass the retryCount parameter to main
+    await main(retryCount + 1); // Pass the retryCount parameter to main
   } else {
     console.error(`Exceeded maximum retry attempts for "${funcName}". Terminating...`);
     // You can add additional error handling or logging here
@@ -122,7 +122,7 @@ async function watchDatabase1(retryCount = 0) {
     }
   } catch (error) {
     // Handle the error and retry
-    await handleAPIError('watchDatabase1', error, retryCount + 1);
+    await handleAPIError('watchDatabase1', error, retryCount);
   }
 }
 
@@ -182,7 +182,7 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
     console.log('Done linking categories.');
   } catch (error) {
     // Handle the error and retry
-    await handleAPIError('linkCategoriesToDatabase1', error, retryCount + 1);
+    await handleAPIError('linkCategoriesToDatabase1', error, retryCount);
   }
 }
 
@@ -202,4 +202,4 @@ async function main() {
 }
 
 // Call the main function to start the process
-setInterval(() => main(0), 5000);
+setInterval(() => main(), 5000);

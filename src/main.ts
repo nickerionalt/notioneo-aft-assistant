@@ -83,8 +83,9 @@ async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
 
   try {
-    // Simulate an error by throwing an exception
-    throw new Error('Simulated API error');
+    if (retryCount < 2) {
+      throw new Error('Simulated API error');
+    }
     
     // Make the request to the Notion API
     const response = await notion.databases.query({

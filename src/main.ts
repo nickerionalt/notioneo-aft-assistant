@@ -144,7 +144,7 @@ async function linkCategoriesToDatabase1() {
           const response31 = await notion.pages.update({
             page_id: database1Item.id,
             properties: {
-              Transactions: {
+              Category: {
                 type: 'relation',
                 relation: [
                   {

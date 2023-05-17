@@ -71,7 +71,7 @@ async function handleAPIError(funcName, error, retryCount) {
     console.log(`Retrying "${funcName}" in ${retryDelay / 1000} seconds...`);
     await new Promise((resolve) => setTimeout(resolve, retryDelay));
     console.log(`Retrying "${funcName}"...`);
-    await main();
+    await main(retryCount); // Pass the retryCount parameter to main
   } else {
     console.error(`Exceeded maximum retry attempts for "${funcName}". Terminating...`);
     // You can add additional error handling or logging here
@@ -83,22 +83,16 @@ async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
 
   try {
-    if (retryCount < 2) {
-      throw new Error('Simulated API error');
-    }
-    
-    // Make the request to the Notion API
-    const response = await notion.databases.query({
-      database_id: DATABASE_1,
-      filter: database1Filter,
-    });
+    if (retryCount >= 2) {
+      // Make the request to the Notion API only if the retryCount is greater than or equal to 2
+      const response = await notion.databases.query({
+        database_id: DATABASE_1,
+        filter: database1Filter,
+      });
 
-    // Simulate a 502 Bad Gateway error
-    throw { status: 502, message: 'Bad Gateway' };
+      console.log(`Found ${response.results.length} items in "Transactions" Database`);
 
-    console.log(`Found ${response.results.length} items in "Transactions" Database`);
-
-    for (const database1Item of response.results) {
+      for (const database1Item of response.results) {
       // Get the Month Text formula from the database_1 item
       const monthTextFormula = database1Item.properties['Month Text'].formula.string;
 
@@ -122,7 +116,10 @@ async function watchDatabase1(retryCount = 0) {
       }
     }
 
-    console.log('Done and trying again.');
+      console.log('Done or trying again.');
+    } else {
+      throw new Error('Simulated API error');
+    }
   } catch (error) {
     // Handle the error and retry
     await handleAPIError('watchDatabase1', error, retryCount + 1);
@@ -194,8 +191,8 @@ async function main() {
   let retryCount = 0;
   while (retryCount < 10) {
     try {
-      await linkCategoriesToDatabase1(retryCount);
       await watchDatabase1(retryCount);
+      await linkCategoriesToDatabase1(retryCount);
       retryCount++;
     } catch (error) {
       console.error('Unexpected error occurred:', error);
@@ -205,4 +202,4 @@ async function main() {
 }
 
 // Call the main function to start the process
-setInterval(main, 5000);
+setInterval(() => main(0), 5000);

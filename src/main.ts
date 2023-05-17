@@ -63,21 +63,6 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
   }
 }
 
-// Define the function to handle API errors and retries
-async function handleAPIError(funcName, error, retryCount) {
-  console.error(`Request to Notion API for "${funcName}" failed:`, error);
-  if (retryCount < 10) {
-    const retryDelay = 5000; // 5 seconds
-    console.log(`Retrying "${funcName}" in ${retryDelay / 1000} seconds...`);
-    await new Promise((resolve) => setTimeout(resolve, retryDelay));
-    console.log(`Retrying "${funcName}"...`);
-    await main(retryCount + 1); // Pass the retryCount parameter to main
-  } else {
-    console.error(`Exceeded maximum retry attempts for "${funcName}". Terminating...`);
-    // You can add additional error handling or logging here
-  }
-}
-
 // Define the main function to watch database_1 and update the Month property when needed
 async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
@@ -122,7 +107,17 @@ async function watchDatabase1(retryCount = 0) {
     }
   } catch (error) {
     // Handle the error and retry
-    await handleAPIError('watchDatabase1', error, retryCount);
+    console.error(`Request to Notion API for "watchDatabase1" failed:`, error);
+    if (retryCount < 10) {
+      const retryDelay = 5000; // 5 seconds
+      console.log(`Retrying "watchDatabase1" in ${retryDelay / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      console.log(`Retrying "watchDatabase1"...`);
+      await watchDatabase1(retryCount + 1);
+    } else {
+      console.error(`Exceeded maximum retry attempts for "watchDatabase1". Terminating...`);
+      // You can add additional error handling or logging here
+    }
   }
 }
 
@@ -182,7 +177,17 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
     console.log('Done linking categories.');
   } catch (error) {
     // Handle the error and retry
-    await handleAPIError('linkCategoriesToDatabase1', error, retryCount);
+    console.error(`Request to Notion API for "linkCategoriesToDatabase1" failed:`, error);
+    if (retryCount < 10) {
+      const retryDelay = 5000; // 5 seconds
+      console.log(`Retrying "linkCategoriesToDatabase1" in ${retryDelay / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      console.log(`Retrying "linkCategoriesToDatabase1"...`);
+      await linkCategoriesToDatabase1(retryCount + 1);
+    } else {
+      console.error(`Exceeded maximum retry attempts for "linkCategoriesToDatabase1". Terminating...`);
+      // You can add additional error handling or logging here
+    }
   }
 }
 
@@ -193,15 +198,12 @@ async function main(retryCount = 0) {
     return;
   }
 
-  try {
-    await watchDatabase1(retryCount);
-    await linkCategoriesToDatabase1(retryCount);
-  } catch (error) {
-    console.error('Unexpected error occurred:', error);
-    await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
-    await main(retryCount + 1);
-  }
+try {
+  await watchDatabase1(retryCount);
+  await linkCategoriesToDatabase1(retryCount);
+  setInterval(() => main(), 5000);
+} catch (error) {
+  console.error('Unexpected error occurred:', error);
+  await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
+  await main(retryCount + 1);
 }
-
-// Call the main function to start the process
-setInterval(() => main(), 5000);

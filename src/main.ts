@@ -111,7 +111,8 @@ async function watchDatabase1(retryCount = 0) {
   } else {
     console.error(`Exceeded maximum retry attempts for "watchDatabase1". Terminating...`);
     // You can add additional error handling or logging here
-  }
+         }
+    }
 }
 
 // Define a function to link categories from DATABASE_3 to DATABASE_1 based on "Name" property

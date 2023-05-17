@@ -20,12 +20,20 @@ enum DatabaseType {
 }
 
 async function getDatabaseId(database: DatabaseType) {
-    const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE, page_size: 50 })).results as BlockObjectResponse[]
-    const databaseId = (results).filter(r =>
-        r?.type === "child_database" &&
-        r.child_database?.title.toLowerCase() === database.toLowerCase()
-    )?.[0].id || '' // Not the cleanest code in earth...
-    return databaseId
+  const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE, page_size: 50 })).results as BlockObjectResponse[];
+
+  console.log('Filtered results:', results);
+
+  const databaseId = results
+    .filter(r =>
+      r?.type === "child_database" &&
+      r.child_database?.title.toLowerCase() === database.toLowerCase()
+    )
+    ?.map(r => r.id)[0] || '';
+
+  console.log('Database ID:', databaseId);
+
+  return databaseId;
 }
 
 const DATABASE_1 = await getDatabaseId(DatabaseType.Transactions)

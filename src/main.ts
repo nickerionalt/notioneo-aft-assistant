@@ -93,28 +93,28 @@ async function watchDatabase1(retryCount = 0) {
       console.log(`Found ${response.results.length} items in "Transactions" Database`);
 
       for (const database1Item of response.results) {
-      // Get the Month Text formula from the database_1 item
-      const monthTextFormula = database1Item.properties['Month Text'].formula.string;
+        // Get the Month Text formula from the database_1 item
+        const monthTextFormula = database1Item.properties['Month Text'].formula.string;
 
-      console.log(`Checking for matching month in "Month" Database for "Transactions" Database item ${database1Item.id}...`);
+        console.log(`Checking for matching month in "Month" Database for "Transactions" Database item ${database1Item.id}...`);
 
-      // Update the filter for database_2 to use the Month Text formula from database_1
-      database2Filter.formula.string.equals = monthTextFormula;
+        // Update the filter for database_2 to use the Month Text formula from database_1
+        database2Filter.formula.string.equals = monthTextFormula;
 
-      // Query database_2 with the updated filter
-      const response2 = await notion.databases.query({
-        database_id: DATABASE_2,
-        filter: database2Filter,
-      });
+        // Query database_2 with the updated filter
+        const response2 = await notion.databases.query({
+          database_id: DATABASE_2,
+          filter: database2Filter,
+        });
 
-      if (response2.results.length > 0) {
-        // Update the Month property in database_1 with the first matching database_2 item if it is empty
-        await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
-        console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
-      } else {
-        console.log(`No matching month found in "Month" Database for "Transactions" Database item ${database1Item.id}.`);
+        if (response2.results.length > 0) {
+          // Update the Month property in database_1 with the first matching database_2 item if it is empty
+          await updateMonthPropertyIfEmpty(database1Item.id, response2.results[0].id);
+          console.log(`Linked "Transactions" Database item ${database1Item.id} with "Month" Database item ${response2.results[0].id}.`);
+        } else {
+          console.log(`No matching month found in "Month" Database for "Transactions" Database item ${database1Item.id}.`);
+        }
       }
-    }
 
       console.log('Done or trying again.');
     } else {
@@ -187,17 +187,19 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
 }
 
 // Define the main function for handling retries
-async function main() {
-  let retryCount = 0;
-  while (retryCount < 10) {
-    try {
-      await watchDatabase1(retryCount);
-      await linkCategoriesToDatabase1(retryCount);
-      retryCount++;
-    } catch (error) {
-      console.error('Unexpected error occurred:', error);
-      break;
-    }
+async function main(retryCount = 0) {
+  if (retryCount >= 10) {
+    console.error('Exceeded maximum retry attempts. Terminating...');
+    return;
+  }
+
+  try {
+    await watchDatabase1(retryCount);
+    await linkCategoriesToDatabase1(retryCount);
+  } catch (error) {
+    console.error('Unexpected error occurred:', error);
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
+    await main(retryCount + 1);
   }
 }
 

@@ -68,8 +68,7 @@ async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
 
   try {
-    if (retryCount >= 2) {
-      // Make the request to the Notion API only if the retryCount is greater than or equal to 2
+      // Make the request to the Notion API
       const response = await notion.databases.query({
         database_id: DATABASE_1,
         filter: database1Filter,
@@ -102,9 +101,6 @@ async function watchDatabase1(retryCount = 0) {
       }
 
       console.log('Done or trying again.');
-    } else {
-      throw new Error('Simulated API error');
-    }
   } catch (error) {
     // Handle the error and retry
     console.error(`Request to Notion API for "watchDatabase1" failed:`, error);
@@ -197,7 +193,6 @@ async function main(retryCount = 0) {
     console.error('Exceeded maximum retry attempts. Terminating...');
     return;
   }
-
     try {
       await watchDatabase1(retryCount);
       await linkCategoriesToDatabase1(retryCount);

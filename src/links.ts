@@ -1,5 +1,5 @@
 export function getSecretValueFromLink(link: string): string | null {
-  const regex = /.*\/(.*)$/; // Regex pattern to match everything after the last '/'
+  const regex = /.*\/([^/]+)$/; // Regex pattern to match the last part after '/'
   const match = regex.exec(link);
 
   if (match && match[1]) {
@@ -9,7 +9,7 @@ export function getSecretValueFromLink(link: string): string | null {
   return null; // Return null if no match found
 }
 
-const link = Deno.env.get("DATABASE_PAGE"); // Retrieve the secret link from Deno environment variables
+const link = Deno.env.get("DATABASE_PAGE");
 if (!link) {
   console.log("Secret link not found in the environment variables.");
   Deno.exit(1);

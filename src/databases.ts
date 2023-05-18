@@ -21,8 +21,6 @@ export enum DatabaseType {
 
 export async function getDatabaseId(database: DatabaseType): Promise<string> {
   const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE })).results as BlockObjectResponse[];
-
-  console.log('Filtered results:', results);
     const databaseId = (results).filter(r =>
         r?.type === "child_database" &&
         r.child_database?.title.toLowerCase() === database.toLowerCase()

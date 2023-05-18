@@ -4,11 +4,11 @@ import { categoryNames } from './categories.ts';
 import { DatabaseType, getDatabaseId  } from './databases.ts';
 import { getSecretValueFromLink } from './links.ts';
 
-const NOTION_TOKEN = await getSecretValueFromLink();
-const DATABASE_PAGE = Deno.env.get("DATABASE_PAGE");
+const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
+const DATABASE_PAGE = await getSecretValueFromLink();
 
 if (!NOTION_TOKEN || !DATABASE_PAGE) {
-    throw new Error("Notion token or database IDs not found. Please, re-check the values again or write a support request to contact@notioneo.com.");
+    throw new Error("Notion Token or "Database" page ID not found. Please, re-check the values again or write a support request to contact@notioneo.com.");
 }
 
 // Initialize a new Notion API client

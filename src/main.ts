@@ -28,7 +28,7 @@ async function getDatabaseId(database: DatabaseType): Promise<string> {
   const databaseId = results
     .filter(r =>
       r?.type === "child_database" &&
-      r.child_database?.title.toLowerCase() === database.toLowerCase()
+      r.child_database?.title[0]?.plain_text.toLowerCase() === database.toLowerCase()
     )
     ?.map(r => r.id)[0] || '';
 

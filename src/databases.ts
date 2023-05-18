@@ -25,11 +25,6 @@ export async function getDatabaseId(database: DatabaseType): Promise<string> {
   console.log('Filtered results:', results);
 
   const databaseId = results
-    .filter(r =>
-      r?.type === "child_database" &&
-      r.child_database?.title.toLowerCase() === database.toLowerCase()
-    )
-    ?.map(r => r.id)[0] || '';
 
   console.log(`Database ID for ${database}:`, databaseId);
 

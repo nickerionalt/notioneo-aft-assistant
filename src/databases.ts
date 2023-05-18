@@ -1,4 +1,4 @@
-enum DatabaseType {
+export enum DatabaseType {
     Transactions = "Transactions",
     Month = "Month",
     Categories = "Categories",

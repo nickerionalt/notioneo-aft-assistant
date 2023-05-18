@@ -20,7 +20,7 @@ export enum DatabaseType {
 }
 
 export async function getDatabaseId(database: DatabaseType): Promise<string> {
-  const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE, page_size: 200 })).results as BlockObjectResponse[];
+  const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE })).results as BlockObjectResponse[];
 
   console.log('Filtered results:', results);
 

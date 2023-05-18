@@ -1,6 +1,6 @@
 import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from "https://deno.land/x/notion_sdk@v1.0.4/src/api-endpoints.ts";
-import { categoryNames } from './categories.ts';
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
+import { categoryNames } from './categories.ts';
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
 const DATABASE_PAGE = Deno.env.get("DATABASE_PAGE");
@@ -21,7 +21,7 @@ enum DatabaseType {
 }
 
 async function getDatabaseId(database: DatabaseType) {
-  const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE, page_size: 50 })).results as BlockObjectResponse[];
+  const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE, page_size: 200 })).results as BlockObjectResponse[];
 
   console.log('Filtered results:', results);
 
@@ -36,10 +36,6 @@ async function getDatabaseId(database: DatabaseType) {
 
   return databaseId;
 }
-
-const DATABASE_1 = await getDatabaseId(DatabaseType.Transactions)
-const DATABASE_2 = await getDatabaseId(DatabaseType.Month)
-const DATABASE_3 = await getDatabaseId(DatabaseType.Categories)
 
 // Set up a filter for database_1 to find RT Income and RT Expense items with empty Month relation
 const database1Filter = {
@@ -92,11 +88,12 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
 // Define the main function to watch database_1 and update the Month property when needed
 async function watchDatabase1(retryCount = 0) {
   console.log('Watching "Transactions" Database...');
+  const databaseId = await getDatabaseId(DatabaseType.Transactions)
 
  try {
   // Make the request to the Notion API
   const response = await notion.databases.query({
-    database_id: DATABASE_1,
+    database_id: databaseId,
     filter: database1Filter,
   });
 
@@ -113,7 +110,7 @@ async function watchDatabase1(retryCount = 0) {
 
     // Query database_2 with the updated filter
     const response2 = await notion.databases.query({
-      database_id: DATABASE_2,
+      database_id: databaseId,
       filter: database2Filter,
     });
 
@@ -144,11 +141,12 @@ async function watchDatabase1(retryCount = 0) {
 // Define a function to link categories from DATABASE_3 to DATABASE_1 based on "Name" property
 async function linkCategoriesToDatabase1(retryCount = 0) {
   console.log('Linking categories from DATABASE_3 to DATABASE_1...');
+  const databaseId = await getDatabaseId(DatabaseType.Categories)
 
   try {
     // Query DATABASE_1 to retrieve all items
     const response3 = await notion.databases.query({
-      database_id: DATABASE_1,
+      database_id: databaseId,
       filter: database3Filter,
     });
 
@@ -160,7 +158,7 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
       if (categoryNames.includes(itemName)) {
         // Query DATABASE_3 to find the matching page based on the item name
         const database3QueryResponse = await notion.databases.query({
-          database_id: DATABASE_3,
+          database_id: databaseId,
           filter: {
             property: 'Name',
             title: {

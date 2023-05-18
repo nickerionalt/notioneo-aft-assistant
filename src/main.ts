@@ -1,6 +1,7 @@
 import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from "https://deno.land/x/notion_sdk@v1.0.4/src/api-endpoints.ts";
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 import { categoryNames } from './categories.ts';
+import { getDatabaseId  } from './databases.ts';
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
 const DATABASE_PAGE = Deno.env.get("DATABASE_PAGE");

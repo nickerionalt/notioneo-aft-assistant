@@ -1,8 +1,9 @@
 import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from "https://deno.land/x/notion_sdk@v1.0.4/src/api-endpoints.ts";
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
+import { getSecretValueFromLink, secretValue } from './links.ts';
 
 const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
-const DATABASE_PAGE = Deno.env.get("DATABASE_PAGE");
+const DATABASE_PAGE = secretValue;
 
 if (!NOTION_TOKEN || !DATABASE_PAGE) {
     throw new Error("Notion token or database IDs not found. Please, re-check the values again or write a support request to contact@notioneo.com.");

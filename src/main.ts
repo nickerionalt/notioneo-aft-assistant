@@ -2,8 +2,9 @@ import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from
 import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 import { categoryNames } from './categories.ts';
 import { DatabaseType, getDatabaseId  } from './databases.ts';
+import { getSecretValueFromLink } from './links.ts';
 
-const NOTION_TOKEN = Deno.env.get("NOTION_TOKEN");
+const NOTION_TOKEN = await getSecretValueFromLink();
 const DATABASE_PAGE = Deno.env.get("DATABASE_PAGE");
 
 if (!NOTION_TOKEN || !DATABASE_PAGE) {

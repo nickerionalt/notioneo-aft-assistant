@@ -1,3 +1,6 @@
+import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from "https://deno.land/x/notion_sdk@v1.0.4/src/api-endpoints.ts";
+import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
+
 export enum DatabaseType {
     Transactions = "Transactions",
     Month = "Month",

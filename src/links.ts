@@ -9,13 +9,13 @@ export function getSecretValueFromLink(link: string): string | null {
   return null; // Return null if no match found
 }
 
-const link = Deno.env.get("DATABASE_PAGE");
+export const link = Deno.env.get("DATABASE_PAGE");
 if (!link) {
   console.log("Secret link not found in the environment variables.");
   Deno.exit(1);
 }
 
-const secretValue = getSecretValueFromLink(link);
+export const secretValue = getSecretValueFromLink(link);
 
 if (secretValue) {
   console.log(secretValue);

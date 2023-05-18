@@ -14,9 +14,9 @@ const notion = new Client({
 });
 
 export enum DatabaseType {
-    Transactions = "Transactions",
-    Month = "Month",
-    Categories = "Categories",
+    Transactions = "transactions",
+    Month = "month",
+    Categories = "categories",
 }
 
 export async function getDatabaseId(database: DatabaseType): Promise<string> {

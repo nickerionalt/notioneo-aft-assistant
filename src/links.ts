@@ -1,5 +1,5 @@
 export function getSecretValueFromLink(link: string): string | null {
-  const regex = /.*\/([^/]+)$/; // Regex pattern to match the last part after '/'
+  const regex = /.*\/Databases-(.*)$/; // Regex pattern to match everything after 'Databases-'
   const match = regex.exec(link);
 
   if (match && match[1]) {

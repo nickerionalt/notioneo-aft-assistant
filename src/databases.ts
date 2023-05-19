@@ -20,18 +20,30 @@ export enum DatabaseType {
     Categories = "categories",
 }
 
-export async function getDatabaseId(database: DatabaseType): Promise<string> {
-  const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE })).results as BlockObjectResponse[];
+export async function getDatabaseId(database: DatabaseType, retryCount = 0): Promise<string> {
+  try {
+    const results = (await notion.blocks.children.list({ block_id: DATABASE_PAGE })).results as BlockObjectResponse[];
     const databaseId = (results).filter(r =>
-        r?.type === "child_database" &&
-        r.child_database?.title.toLowerCase() === database.toLowerCase()
-    )?.[0].id || ''
-    
-  console.log(`Database ID for ${database}:`, databaseId);
+      r?.type === "child_database" &&
+      r.child_database?.title.toLowerCase() === database.toLowerCase()
+    )?.[0].id || '';
 
-  if (!databaseId) {
-    throw new Error(`Database ID not found for ${database}.`);
+    console.log(`Database ID for ${database}:`, databaseId);
+
+    if (!databaseId) {
+      throw new Error(`Database ID not found for ${database}.`);
+    }
+
+    return databaseId;
+  } catch (error) {
+    console.error(`Error retrieving database ID for ${database}:`, error);
+    if (retryCount < 10) {
+      const retryDelay = 5000; // 5 seconds
+      console.log(`Retrying "getDatabaseId" for ${database} in ${retryDelay / 1000} seconds...`);
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      await getDatabaseId(database, retryCount + 1);
+    } else {
+      throw error; // Exceeded maximum retry attempts, propagate the error
+    }
   }
-
-  return databaseId;
 }

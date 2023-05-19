@@ -66,11 +66,11 @@ async function updateMonthPropertyIfEmpty(database1ItemId, database2ItemId) {
 
 // Define the main function to watch database_1 and update the Month property when needed
 async function watchDatabase1(retryCount = 0) {
+ try {
   console.log('Watching "Transactions" Database...');
   const transactionsDatabaseId = await getDatabaseId(DatabaseType.Transactions);
   const monthDatabaseId = await getDatabaseId(DatabaseType.Month);
 
- try {
   // Make the request to the Notion API
   const response = await notion.databases.query({
     database_id: transactionsDatabaseId,
@@ -120,11 +120,11 @@ async function watchDatabase1(retryCount = 0) {
 
 // Define a function to link categories from DATABASE_3 to DATABASE_1 based on "Name" property
 async function linkCategoriesToDatabase1(retryCount = 0) {
+  try {
   console.log('Linking categories from DATABASE_3 to DATABASE_1...');
   const transactionsDatabaseId = await getDatabaseId(DatabaseType.Transactions);
   const categoriesDatabaseId = await getDatabaseId(DatabaseType.Categories)
-
-  try {
+      
     // Query DATABASE_1 to retrieve all items
     const response3 = await notion.databases.query({
       database_id: transactionsDatabaseId,

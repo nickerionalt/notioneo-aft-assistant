@@ -190,21 +190,20 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
   }
 }
 
-// Define the main function for handling retries
 async function main(retryCount = 0) {
-  if (retryCount >= 10) {
-    console.error('Exceeded maximum retry attempts. Terminating...');
-    return;
-  }
-
   try {
     await watchDatabase1(retryCount);
     await linkCategoriesToDatabase1(retryCount);
     setTimeout(() => main(retryCount), 5000); // Delay the execution of main() after 5 seconds
   } catch (error) {
-    console.error('Unexpected error occurred:', error);
-    await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
-    await main(retryCount + 1);
+    if (retryCount < 10) {
+      console.error('Unexpected error occurred:', error);
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds before retrying
+      await main(retryCount + 1);
+    } else {
+      console.error('Exceeded maximum retry attempts. Terminating...');
+      return;
+    }
   }
 }
 

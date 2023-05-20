@@ -190,11 +190,21 @@ async function linkCategoriesToDatabase1(retryCount = 0) {
   }
 }
 
+const MAX_RUNTIME = 355 * 60 * 1000; // 5 hours and 55 minutes in milliseconds
+
 async function main(retryCount = 0) {
   try {
     await watchDatabase1(retryCount);
     await linkCategoriesToDatabase1(retryCount);
-    setTimeout(() => main(retryCount), 5000); // Delay the execution of main() after 5 seconds
+
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime >= MAX_RUNTIME) {
+      console.log('Program has reached the maximum runtime. Stopping now.');
+      // Add any necessary cleanup or finalization code here
+      process.exit(0); // Exit the program gracefully
+    } else {
+      setTimeout(() => main(retryCount), 5000); // Delay the execution of main() after 5 seconds
+    }
   } catch (error) {
     if (retryCount < 10) {
       console.error('Unexpected error occurred:', error);
@@ -207,4 +217,5 @@ async function main(retryCount = 0) {
   }
 }
 
+const startTime = Date.now();
 main();

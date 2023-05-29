@@ -3,6 +3,7 @@ import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 import { categoryNames } from './categories.ts';
 import { DatabaseType, getDatabaseId  } from './databases.ts';
 import "https://deno.land/x/dotenv/load.ts";
+import * as dotenv from "https://deno.land/x/dotenv@v3.2.2/mod.ts";
 
 const NOTION_TOKEN = Deno.env.get(NOTION);
 const DATABASE_PAGE = Deno.env.get(DATABASE);

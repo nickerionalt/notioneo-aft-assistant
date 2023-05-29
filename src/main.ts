@@ -4,10 +4,13 @@ import { categoryNames } from './categories.ts';
 import { DatabaseType, getDatabaseId  } from './databases.ts';
 
 const NOTION_TOKEN = 'secret_6gzaAFMkmNi2yNIr67FkR2yEfh1rsZCn8hTbZe9weXe';
-const DATABASE_PAGE = '124b6bb636394e72b43f120b030375e3');
+const DATABASE_PAGE = '124b6bb636394e72b43f120b030375e3';
+
+console.log('NOTION_TOKEN:', NOTION_TOKEN);
+console.log('DATABASE_PAGE:', DATABASE_PAGE);
 
 if (!NOTION_TOKEN || !DATABASE_PAGE) {
-    throw new Error("Notion Token or Database page ID not found. Please, re-check the values again or write a support request to contact@notioneo.com.");
+    throw new Error("Notion token or database IDs not found. Please, re-check the values again or write a support request to contact@notioneo.com.");
 }
 
 // Initialize a new Notion API client

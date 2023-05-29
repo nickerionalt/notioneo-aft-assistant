@@ -6,7 +6,7 @@ const NOTION_TOKEN = 'secret_6gzaAFMkmNi2yNIr67FkR2yEfh1rsZCn8hTbZe9weXe';
 const DATABASE_PAGE = '124b6bb636394e72b43f120b030375e3';
 
 const notion = new Client({
-  auth: "NOTION_TOKEN",
+  auth: NOTION_TOKEN,
 });
 
 // Replace "DATABASE_PAGE" with the actual page ID of your Notion page

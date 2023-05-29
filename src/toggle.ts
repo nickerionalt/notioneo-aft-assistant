@@ -9,12 +9,9 @@ const notion = new Client({
   auth: NOTION_TOKEN,
 });
 
-// Replace "DATABASE_PAGE" with the actual page ID of your Notion page
-const pageId = "DATABASE_PAGE";
-
 async function findAndReplaceEmbedLink() {
   try {
-    const page = await notion.pages.retrieve({ page_id: pageId });
+    const page = await notion.pages.retrieve({ page_id: DATABASE_PAGE });
     
     // Find the embed block on the page
     const embedBlock = page.properties.embed as any;

@@ -14,4 +14,4 @@ jobs:
       - name: Verify Deno installation
         run: deno --version 
       - name: Run Deno
-        run: deno run --allow-net=api.notion.com --allow-env https://raw.githubusercontent.com/nickerionalt/notioneo-aft-assistant/main/src/page1.ts
+        run: deno run --allow-net=api.notion.com --allow-env https://raw.githubusercontent.com/nickerionalt/notioneo-aft-assistant/main/src/toggle.ts

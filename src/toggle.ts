@@ -11,23 +11,25 @@ const notion = new Client({
 
 async function findAndReplaceEmbedLink() {
   try {
-    const page = await notion.pages.retrieve({ page_id: DATABASE_PAGE });
+  const results = await notion.blocks.children.list({ block_id: DATABASE_PAGE }).results as BlockObjectResponse[];
     
-    // Find the embed block on the page
-    const embedBlock = page.properties.embed as any;
-    const embedUrl = embedBlock.url;
+  // Find the embed block and update the link
+  for (const result of results) {
+    if (result.type === 'embed') {
+      const newProperties: EmbedBlock = {
+        type: 'embed',
+        embed: {
+          url: 'https://twitter.com/'
+        }
+      };
 
-    // Replace the link in the embed with a different link
-    const newEmbedUrl = "https://twitter.com/home";
-    embedBlock.url = newEmbedUrl;
-
-    // Update the page with the modified embed block
-    await notion.blocks.update({
-      block_id: embedBlock.id,
-      type: embedBlock.type,
-      [embedBlock.type]: embedBlock,
-    });
-
+      await notion.blocks.update({
+        block_id: result.id,
+        type: 'embed',
+        [result.type]: newProperties
+      });
+    }
+  }
     console.log("Embed link replaced successfully!");
   } catch (error) {
     console.error("Error:", error);

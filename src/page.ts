@@ -1,4 +1,4 @@
-import { Client } from '@notionhq/client';
+import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 
 // Initialize the Notion API client
 const notion = new Client({
@@ -29,7 +29,7 @@ async function findDatabasesPage(): Promise<string | null> {
 // Usage
 findDatabasesPage().then((pageId) => {
   if (pageId) {
-    console.log(`Found the "Databases" page! Page ID: ${pageId}`);
+    console.log('Found the "Databases" page! Page ID: ${pageId}');
   } else {
     console.log('The "Databases" page was not found.');
   }

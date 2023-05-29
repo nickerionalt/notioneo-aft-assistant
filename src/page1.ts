@@ -1,8 +1,8 @@
-import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
+import { Client } from "https://deno.land/x/notion_sdk@v2.2.3/src/mod.ts";
 
 // Initialize the Notion API client
 const notion = new Client({
-  auth: 'secret_6gzaAFMkmNi2yNIr67FkR2yEfh1rsZCn8hTbZe9weXe',
+    auth: 'secret_6gzaAFMkmNi2yNIr67FkR2yEfh1rsZCn8hTbZe9weXe',
 });
 
 // Function to find the "Databases" page in a Notion workspace

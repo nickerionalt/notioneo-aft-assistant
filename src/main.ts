@@ -3,8 +3,8 @@ import { Client } from "https://deno.land/x/notion_sdk@v1.0.4/src/mod.ts";
 import { categoryNames } from './categories.ts';
 import { DatabaseType, getDatabaseId  } from './databases.ts';
 
-const NOTION_TOKEN = 'secret_6gzaAFMkmNi2yNIr67FkR2yEfh1rsZCn8hTbZe9weXe';
-const DATABASE_PAGE = '124b6bb636394e72b43f120b030375e3';
+const NOTION_TOKEN = Deno.env.get(NOTION);
+const DATABASE_PAGE = Deno.env.get(DATABASE);
 
 console.log('NOTION_TOKEN:', NOTION_TOKEN);
 console.log('DATABASE_PAGE:', DATABASE_PAGE);

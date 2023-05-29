@@ -1,51 +1,40 @@
 import { Client } from "https://deno.land/x/notion_sdk@v2.2.3/src/mod.ts";
+import { BlockObjectResponse, CreatePageParameters, QueryDatabaseResponse } from "https://deno.land/x/notion_sdk@v2.2.3/src/api-endpoints.ts";
 
 // Set up your Notion API credentials
 const NOTION_TOKEN = 'secret_6gzaAFMkmNi2yNIr67FkR2yEfh1rsZCn8hTbZe9weXe';
 const DATABASE_PAGE = '124b6bb636394e72b43f120b030375e3';
 
-// Create a new Notion client
-const notion = new Client({ auth: NOTION_TOKEN });
+const notion = new Client({
+  auth: "NOTION_TOKEN",
+});
 
-// Find the toggle block on the page and modify the embed link
-async function updateToggleBlock() {
+// Replace "DATABASE_PAGE" with the actual page ID of your Notion page
+const pageId = "DATABASE_PAGE";
+
+async function findAndReplaceEmbedLink() {
   try {
-    // Fetch the Notion page
-    const page = await notion.pages.retrieve({ page_id: DATABASE_PAGE });
+    const page = await notion.pages.retrieve({ page_id: pageId });
+    
+    // Find the embed block on the page
+    const embedBlock = page.properties.embed as any;
+    const embedUrl = embedBlock.url;
 
-    // Find the toggle block within the page
-    const toggleBlock = findToggleBlock(page);
+    // Replace the link in the embed with a different link
+    const newEmbedUrl = "https://twitter.com/home";
+    embedBlock.url = newEmbedUrl;
 
-    if (toggleBlock) {
-      // Modify the embed link
-      toggleBlock.embed.link = "your-new-embed-link";
+    // Update the page with the modified embed block
+    await notion.blocks.update({
+      block_id: embedBlock.id,
+      type: embedBlock.type,
+      [embedBlock.type]: embedBlock,
+    });
 
-      // Update the page with the modified toggle block
-      await notion.blocks.update({
-        block_id: toggleBlock.id,
-        type: "toggle",
-        toggle: { text: [{ type: "text", text: { content: toggleBlock.toggle.text.content } }], embed: toggleBlock.embed },
-      });
-
-      console.log("Toggle block updated successfully.");
-    } else {
-      console.log("Toggle block not found.");
-    }
+    console.log("Embed link replaced successfully!");
   } catch (error) {
-    console.error("Error updating toggle block:", error);
+    console.error("Error:", error);
   }
 }
 
-// Helper function to find a toggle block on the page
-function findToggleBlock(page: any) {
-  const blocks = page.properties.blocks;
-  for (const block of blocks) {
-    if (block.type === "toggle" && block.embed) {
-      return block;
-    }
-  }
-  return null;
-}
-
-// Run the updateToggleBlock function
-updateToggleBlock();
+findAndReplaceEmbedLink();
